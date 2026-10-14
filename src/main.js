@@ -87,5 +87,4 @@ app.on('web-contents-created', (_event, contents) => {
     prefs.sandbox = true;
   });
 });
-app.on('certificate-error', (event) => { event.preventDefault(); });
 app.on('window-all-closed', () => { if (process.platform !== 'darwin') app.quit(); });
