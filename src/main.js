@@ -34,12 +34,14 @@ async function initialiseBlocking(webSession) {
     // Load maintained, prebuilt advertising and tracking filter lists.
     const blocker = await ElectronBlocker.fromPrebuiltAdsAndTracking(fetch, {\n      path: path.join(app.getPath('userData'), 'adblock-engine.bin'),\n      read: fs.readFile,\n      write: fs.writeFile\n    });
     webSession.webRequest.onBeforeRequest(null);
-    blocker.enableBlockingInSession(webSession);
+    if (blockingEnabled) blocker.enableBlockingInSession(webSession);
     adblocker = blocker;
     usingFullFilterLists = true;
+    for (const win of BrowserWindow.getAllWindows()) win.webContents.send('vyron:blocking:status', { enabled: blockingEnabled, fullFilterLists: true });
   } catch (error) {
     // Offline startup remains functional with the bundled emergency domain list.
     console.warn('VYRON filter lists unavailable; using built-in domain list.', error?.message || error);
+    for (const win of BrowserWindow.getAllWindows()) win.webContents.send('vyron:blocking:status', { enabled: blockingEnabled, fullFilterLists: false });
   }
 }
 app.whenReady().then(async () => {
