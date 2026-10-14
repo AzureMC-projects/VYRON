@@ -83,7 +83,7 @@ function createWindow() {
     prefs.webSecurity = true;
     prefs.allowRunningInsecureContent = false;
     prefs.plugins = false;
-    if (!isHttp(params.src || 'https://example.com')) event.preventDefault();
+    if (params.src !== 'about:blank' && !isHttp(params.src || '')) event.preventDefault();
   });
 }
 ipcMain.handle('vyron:blocking:get', () => ({ enabled: blockingEnabled, fullFilterLists: usingFullFilterLists }));
