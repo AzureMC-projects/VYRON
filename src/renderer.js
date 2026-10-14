@@ -93,6 +93,31 @@ function renderBookmarks() {
     list.appendChild(button);
   }
 }
+function renderHistory() {
+  const list = $('historyList');
+  if (!list) return;
+  list.replaceChildren();
+  if (!historyItems.length) {
+    const empty = document.createElement('p');
+    empty.className = 'muted';
+    empty.textContent = 'Pages you visit will appear here.';
+    list.appendChild(empty);
+    return;
+  }
+  for (const item of historyItems.slice(0, 100)) {
+    const button = document.createElement('button');
+    button.className = 'history-item';
+    const title = document.createElement('strong');
+    title.textContent = item.title || safeHost(item.url);
+    const url = document.createElement('small');
+    url.textContent = item.url;
+    const time = document.createElement('small');
+    time.textContent = new Date(item.visitedAt).toLocaleString();
+    button.append(title, url, time);
+    button.onclick = () => { $('historyPanel').hidden = true; navigate(current(), item.url); };
+    list.appendChild(button);
+  }
+}
 function persistBookmarks() {
   localStorage.setItem(BOOKMARKS_KEY, JSON.stringify(bookmarks));
   renderBookmarks();
@@ -124,6 +149,7 @@ function addHistory(url, title) {
   if (!/^https?:\/\//i.test(url)) return;
   historyItems = [{ url, title: title || safeHost(url), visitedAt: Date.now() }, ...historyItems.filter(item => item.url !== url)].slice(0, 500);
   localStorage.setItem(HISTORY_KEY, JSON.stringify(historyItems));
+  renderHistory();
 }
 function activate(id) {
   activeId = id;
@@ -213,8 +239,16 @@ $('forward').addEventListener('click', () => { const t = current(); if (t && t.v
 $('reload').addEventListener('click', () => { const t = current(); if (t && !t.start) t.view.reload(); });
 $('bookmarkButton').addEventListener('click', toggleBookmark);
 $('clearBookmarks').addEventListener('click', () => { bookmarks = []; persistBookmarks(); updateBookmarkButton(); status.textContent = 'Bookmarks cleared'; });
-$('settingsButton').addEventListener('click', () => { settings.hidden = !settings.hidden; });
+$('settingsButton').addEventListener('click', () => { settings.hidden = !settings.hidden; $('historyPanel').hidden = true; });
 $('closeSettings').addEventListener('click', () => { settings.hidden = true; });
+$('historyButton').addEventListener('click', () => { $('historyPanel').hidden = !$('historyPanel').hidden; settings.hidden = true; renderHistory(); });
+$('closeHistory').addEventListener('click', () => { $('historyPanel').hidden = true; });
+$('clearHistory').addEventListener('click', () => {
+  historyItems = [];
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(historyItems));
+  renderHistory();
+  status.textContent = 'Browsing history cleared';
+});
 $('themeSelect').addEventListener('change', e => { prefs.theme = e.target.value; persistPrefs(); applyPrefs(); });
 $('accentSelect').addEventListener('input', e => { prefs.accent = e.target.value; persistPrefs(); applyPrefs(); });
 $('densitySelect').addEventListener('change', e => { prefs.density = e.target.value; persistPrefs(); applyPrefs(); });
@@ -259,6 +293,7 @@ document.addEventListener('keydown', e => {
 });
 applyPrefs();
 renderBookmarks();
+renderHistory();
 window.vyron.getBlocking().then(result => { blockingEnabled = result.enabled; syncBlockingUI(result); }).catch(() => { status.textContent = 'Privacy controls unavailable'; });
 window.vyron.onBlockingStatus(result => { blockingEnabled = result.enabled; syncBlockingUI(result); });
 createTab();
