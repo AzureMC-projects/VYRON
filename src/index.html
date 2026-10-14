@@ -9,7 +9,7 @@
 </head>
 <body>
   <header class="topbar">
-    <button class="brand" id="homeButton" aria-label="Go to start page"><span class="brand-mark">V</span><span>VYRON</span></button>
+    <button class="brand" id="homeButton" aria-label="Go to start page"><span class="brand-mark">V</span><span class="brand-word">VYRON</span></button>
     <div class="tabs" id="tabs" role="tablist" aria-label="Browser tabs"></div>
     <button class="icon-button" id="newTab" title="New tab" aria-label="New tab">+</button>
     <button class="icon-button" id="settingsButton" title="Customise VYRON" aria-label="Customise VYRON">⚙</button>
@@ -59,11 +59,24 @@
       <label class="setting-row"><span><strong>Interface density</strong><small>Space or compactness</small></span><select id="densitySelect"><option value="comfortable">Comfortable</option><option value="compact">Compact</option></select></label>
       <label class="setting-row"><span><strong>Reduce motion</strong><small>Keep transitions subtle</small></span><input type="checkbox" id="motionToggle"></label>
       <div class="settings-divider"></div>
+      <p class="eyebrow">PIXEL-LEVEL CONTROLS</p>
+      <p class="disclaimer">Fine-tune the interface. Changes save automatically.</p>
+      <label class="range-setting"><span><strong>Interface scale</strong><output id="uiScaleValue">100%</output></span><input id="uiScaleControl" type="range" min="80" max="120" value="100"></label>
+      <label class="range-setting"><span><strong>Corner roundness</strong><output id="cornerRadiusValue">13px</output></span><input id="cornerRadiusControl" type="range" min="0" max="28" value="13"></label>
+      <label class="range-setting"><span><strong>Spacing</strong><output id="spacingValue">14px</output></span><input id="spacingControl" type="range" min="4" max="24" value="14"></label>
+      <label class="range-setting"><span><strong>UI font size</strong><output id="fontSizeValue">14px</output></span><input id="fontSizeControl" type="range" min="11" max="18" value="14"></label>
+      <label class="range-setting"><span><strong>Toolbar height</strong><output id="toolbarHeightValue">58px</output></span><input id="toolbarHeightControl" type="range" min="40" max="76" value="58"></label>
+      <label class="range-setting"><span><strong>Tab width</strong><output id="tabWidthValue">220px</output></span><input id="tabWidthControl" type="range" min="110" max="320" step="5" value="220"></label>
+      <label class="setting-row"><span><strong>Show branding</strong><small>Hide the logo and wordmark</small></span><input type="checkbox" id="showBrandControl" checked></label>
+      <label class="setting-row"><span><strong>Show status bar</strong><small>Hide the bottom strip</small></span><input type="checkbox" id="showStatusControl" checked></label>
+      <label class="setting-row"><span><strong>Show bookmarks</strong><small>Hide the start-page bookmarks</small></span><input type="checkbox" id="showBookmarksControl" checked></label>
+      <label class="setting-row"><span><strong>Show Go button</strong><small>Remove the address-bar button</small></span><input type="checkbox" id="showAddressGoControl" checked></label>
+      <div class="settings-divider"></div>
       <p class="eyebrow">PRIVACY & SECURITY</p>
       <label class="setting-row"><span><strong>Tracker blocking</strong><small id="blockerStatus">Loading protection status…</small></span><input type="checkbox" id="blockerSetting" checked></label>
       <p class="disclaimer">VYRON loads maintained advertising and tracking filter lists and caches them locally. If the lists cannot be downloaded, it falls back to a smaller built-in domain list. No filter engine catches every ad or tracking method. Site camera, microphone, location, notifications, and other permission requests are denied by default.</p>
       <button id="clearData" class="secondary-button">Clear cookies, site data and cache</button>
-      <button id="resetSettings" class="secondary-button">Reset appearance</button>
+      <button id="resetSettings" class="secondary-button">Reset all customisation</button>
       <p id="privacyFeedback" class="disclaimer" role="status"></p>
     </aside>
     <aside id="historyPanel" class="settings-panel history-panel" hidden>

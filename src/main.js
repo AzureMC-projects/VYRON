@@ -67,13 +67,14 @@ app.whenReady().then(async () => {
 function createWindow() {
   const win = new BrowserWindow({
     width: 1440, height: 920, minWidth: 780, minHeight: 580,
-    backgroundColor: '#0b0d12', title: 'VYRON',
+    backgroundColor: '#0b0d12', title: 'VYRON', autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true, nodeIntegration: false, sandbox: true,
       webviewTag: true, webSecurity: true, allowRunningInsecureContent: false
     }
   });
+  win.setMenu(null); // Hide the default File / Edit / View menu.
   win.loadFile(path.join(__dirname, 'index.html'));
   win.webContents.setWindowOpenHandler(({ url }) => {
     if (isHttp(url)) shell.openExternal(url);

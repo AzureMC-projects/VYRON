@@ -6,7 +6,7 @@ const status = $('statusText');
 const PREFS_KEY = 'vyron-preferences-v1';
 const BOOKMARKS_KEY = 'vyron-bookmarks-v1';
 const HISTORY_KEY = 'vyron-history-v1';
-const defaults = { theme: 'midnight', accent: '#8b7cff', density: 'comfortable', reduceMotion: false, searchEngine: 'duckduckgo' };
+const defaults = { theme: 'midnight', accent: '#8b7cff', density: 'comfortable', reduceMotion: false, searchEngine: 'duckduckgo', uiScale: 100, cornerRadius: 13, spacing: 14, fontSize: 14, toolbarHeight: 58, tabWidth: 220, showBrand: true, showStatus: true, showBookmarks: true, showAddressGo: true };
 let prefs = { ...defaults };
 let bookmarks = [];
 let historyItems = [];
@@ -24,6 +24,18 @@ function applyPrefs() {
   document.body.dataset.density = prefs.density;
   document.body.classList.toggle('reduce-motion', !!prefs.reduceMotion);
   document.documentElement.style.setProperty('--accent', prefs.accent);
+  document.documentElement.style.setProperty('--ui-scale', String(prefs.uiScale / 100));
+  document.documentElement.style.setProperty('--radius', `${prefs.cornerRadius}px`);
+  document.documentElement.style.setProperty('--space', `${prefs.spacing}px`);
+  document.documentElement.style.setProperty('--font-size', `${prefs.fontSize}px`);
+  document.documentElement.style.setProperty('--toolbar-height', `${prefs.toolbarHeight}px`);
+  document.documentElement.style.setProperty('--tab-width', `${prefs.tabWidth}px`);
+  document.body.classList.toggle('hide-brand', !prefs.showBrand);
+  document.body.classList.toggle('hide-status', !prefs.showStatus);
+  document.body.classList.toggle('hide-bookmarks', !prefs.showBookmarks);
+  document.body.classList.toggle('hide-address-go', !prefs.showAddressGo);
+  for (const key of ['uiScale','cornerRadius','spacing','fontSize','toolbarHeight','tabWidth']) { const c = $(`${key}Control`), o = $(`${key}Value`); if (c) c.value = prefs[key]; if (o) o.textContent = `${prefs[key]}${key === 'uiScale' ? '%' : 'px'}`; }
+  for (const key of ['showBrand','showStatus','showBookmarks','showAddressGo']) { const c = $(`${key}Control`); if (c) c.checked = !!prefs[key]; }
   $('themeSelect').value = prefs.theme;
   $('accentSelect').value = prefs.accent;
   $('densitySelect').value = prefs.density;
@@ -254,6 +266,8 @@ $('accentSelect').addEventListener('input', e => { prefs.accent = e.target.value
 $('densitySelect').addEventListener('change', e => { prefs.density = e.target.value; persistPrefs(); applyPrefs(); });
 $('motionToggle').addEventListener('change', e => { prefs.reduceMotion = e.target.checked; persistPrefs(); applyPrefs(); });
 if ($('searchEngine')) $('searchEngine').addEventListener('change', e => { prefs.searchEngine = e.target.value; persistPrefs(); });
+for (const key of ['uiScale','cornerRadius','spacing','fontSize','toolbarHeight','tabWidth']) { const c = $(`${key}Control`); if (c) c.addEventListener('input', e => { prefs[key] = Number(e.target.value); persistPrefs(); applyPrefs(); }); }
+for (const key of ['showBrand','showStatus','showBookmarks','showAddressGo']) { const c = $(`${key}Control`); if (c) c.addEventListener('change', e => { prefs[key] = e.target.checked; persistPrefs(); applyPrefs(); }); }
 $('resetSettings').addEventListener('click', () => { prefs = { ...defaults }; persistPrefs(); applyPrefs(); });
 $('blockerToggle').addEventListener('click', async () => {
   const result = await window.vyron.setBlocking(!blockingEnabled);
