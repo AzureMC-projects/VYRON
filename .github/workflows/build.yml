@@ -30,3 +30,10 @@ jobs:
         run: npm run check
       - name: Build Linux packages
         run: npm run dist:linux
+      - name: Upload Linux installers
+        uses: actions/upload-artifact@v4
+        with:
+          name: vyron-linux-${{ github.sha }}
+          path: release/*
+          if-no-files-found: error
+          retention-days: 14
