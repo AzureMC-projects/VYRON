@@ -5,5 +5,11 @@ contextBridge.exposeInMainWorld('vyron', Object.freeze({
   version: () => ipcRenderer.invoke('vyron:app:version'),
   getBlocking: () => ipcRenderer.invoke('vyron:blocking:get'),
   setBlocking: enabled => ipcRenderer.invoke('vyron:blocking:set', Boolean(enabled)),
-  clearBrowsingData: () => ipcRenderer.invoke('vyron:data:clear')
+  clearBrowsingData: () => ipcRenderer.invoke('vyron:data:clear'),
+  onBlockingStatus: callback => {
+    if (typeof callback !== 'function') return () => {};
+    const listener = (_event, value) => callback(value);
+    ipcRenderer.on('vyron:blocking:status', listener);
+    return () => ipcRenderer.removeListener('vyron:blocking:status', listener);
+  }
 }));
