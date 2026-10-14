@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'none';">
+  <title>VYRON</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <button class="brand" id="homeButton" aria-label="Go to start page"><span class="brand-mark">V</span><span>VYRON</span></button>
+    <div class="tabs" id="tabs" role="tablist" aria-label="Browser tabs"></div>
+    <button class="icon-button" id="newTab" title="New tab" aria-label="New tab">+</button>
+    <button class="icon-button" id="settingsButton" title="Customise VYRON" aria-label="Customise VYRON">⚙</button>
+  </header>
+
+  <section class="toolbar" aria-label="Navigation">
+    <button class="icon-button" id="back" title="Back" aria-label="Back">←</button>
+    <button class="icon-button" id="forward" title="Forward" aria-label="Forward">→</button>
+    <button class="icon-button" id="reload" title="Reload" aria-label="Reload">↻</button>
+    <form id="addressForm" class="address-form">
+      <span class="lock" id="securityIcon" aria-hidden="true">◈</span>
+      <input id="address" aria-label="Search or enter address" autocomplete="off" spellcheck="false" placeholder="Search or enter a URL">
+      <button type="submit" class="go-button">Go</button>
+    </form>
+    <button class="icon-button" id="blockerToggle" title="Toggle basic tracker blocking" aria-label="Toggle basic tracker blocking">◉</button>
+  </section>
+
+  <main id="viewport" class="viewport">
+    <section id="startPage" class="start-page">
+      <div class="hero">
+        <div class="hero-mark">V</div>
+        <p class="eyebrow">YOUR WEB. YOUR RULES.</p>
+        <h1>Make the web <span>yours.</span></h1>
+        <p class="subhead">A faster-feeling, more personal space to explore.</p>
+        <form id="startSearch" class="start-search">
+          <span>⌕</span>
+          <input id="startAddress" aria-label="Search the web" placeholder="Search anything or enter a URL" autocomplete="off">
+          <button type="submit">Explore ↗</button>
+        </form>
+        <div class="quick-links">
+          <button data-url="https://developer.mozilla.org">MDN</button>
+          <button data-url="https://wikipedia.org">Wikipedia</button>
+          <button data-url="https://github.com">GitHub</button>
+        </div>
+      </div>
+      <p class="local-note"><span class="status-dot"></span> Customise your browser from the settings panel.</p>
+    </section>
+    <aside id="settingsPanel" class="settings-panel" hidden>
+      <div class="panel-heading"><div><p class="eyebrow">PERSONALISE</p><h2>Your VYRON</h2></div><button id="closeSettings" class="icon-button" aria-label="Close settings">×</button></div>
+      <label class="setting-row"><span><strong>Appearance</strong><small>Choose your atmosphere</small></span><select id="themeSelect"><option value="midnight">Midnight</option><option value="light">Light</option><option value="forest">Forest</option><option value="violet">Violet</option></select></label>
+      <label class="setting-row"><span><strong>Accent colour</strong><small>Make it feel like yours</small></span><input type="color" id="accentSelect" value="#8b7cff"></label>
+      <label class="setting-row"><span><strong>Interface density</strong><small>Space or compactness</small></span><select id="densitySelect"><option value="comfortable">Comfortable</option><option value="compact">Compact</option></select></label>
+      <label class="setting-row"><span><strong>Reduce motion</strong><small>Keep transitions subtle</small></span><input type="checkbox" id="motionToggle"></label>
+      <div class="settings-divider"></div>
+      <p class="eyebrow">PRIVACY</p>
+      <div class="setting-row"><span><strong>Tracker blocklist</strong><small id="blockerStatus">Prototype protection is limited</small></span><span class="pill" id="blockerPill">BETA</span></div>
+      <p class="disclaimer">This is an early prototype. Blocking is currently a small built-in domain list, not a full ad-blocking engine. Site permissions are denied by default in this build.</p>
+      <button id="resetSettings" class="secondary-button">Reset appearance</button>
+    </aside>
+  </main>
+  <footer class="statusbar"><span><span class="status-dot"></span> VYRON prototype</span><span id="statusText">Ready when you are</span></footer>
+  <script src="renderer.js"></script>
+</body>
+</html>
