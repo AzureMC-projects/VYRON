@@ -1,5 +1,6 @@
 const { app, BrowserWindow, session, shell, ipcMain, dialog } = require('electron');
 const path = require('node:path');
+const fs = require('node:fs/promises');
 const { ElectronBlocker } = require('@ghostery/adblocker-electron');
 const fetch = require('cross-fetch');
 
@@ -31,7 +32,7 @@ async function initialiseBlocking(webSession) {
   installFallbackBlocking(webSession);
   try {
     // Load maintained, prebuilt advertising and tracking filter lists.
-    const blocker = await ElectronBlocker.fromPrebuiltAdsAndTracking(fetch);
+    const blocker = await ElectronBlocker.fromPrebuiltAdsAndTracking(fetch, {\n      path: path.join(app.getPath('userData'), 'adblock-engine.bin'),\n      read: fs.readFile,\n      write: fs.writeFile\n    });
     webSession.webRequest.onBeforeRequest(null);
     blocker.enableBlockingInSession(webSession);
     adblocker = blocker;
