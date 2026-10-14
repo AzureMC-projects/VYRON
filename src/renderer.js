@@ -260,4 +260,5 @@ document.addEventListener('keydown', e => {
 applyPrefs();
 renderBookmarks();
 window.vyron.getBlocking().then(result => { blockingEnabled = result.enabled; syncBlockingUI(result); }).catch(() => { status.textContent = 'Privacy controls unavailable'; });
+window.vyron.onBlockingStatus(result => { blockingEnabled = result.enabled; syncBlockingUI(result); });
 createTab();
