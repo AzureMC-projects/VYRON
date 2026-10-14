@@ -12,7 +12,7 @@ VYRON is a customisable desktop browser built on Electron/Chromium. The reposito
 - Custom themes, accent colour, compact/comfortable layout and reduced motion
 - Selectable DuckDuckGo, Google or Bing search
 - Persistent browsing session and download save prompts
-- Built-in request blocking for common advertising/tracking domains
+- EasyList/uBlock Origin-compatible advertising and tracking filters, cached locally, with a bundled domain-list fallback when the filter download is unavailable
 - Site permissions denied by default
 - Electron renderer sandbox, context isolation, Node integration disabled, and restrictive app-shell navigation
 
@@ -45,7 +45,7 @@ Installers are written to `release/`. Cross-platform packaging may require platf
 
 ## Privacy and security boundaries
 
-VYRON is an independently developed browser application, not a replacement for the security engineering and update infrastructure of a major browser vendor. Chromium's engine is supplied by Electron and must be kept updated. The current built-in blocker uses a domain list and will not block every ad, cosmetic element, or tracking technique. Site permissions are denied by default; this can break websites that rely on camera, microphone, notifications, or geolocation.
+VYRON is an independently developed browser application, not a replacement for the security engineering and update infrastructure of a major browser vendor. Chromium's engine is supplied by Electron and must be kept updated. The filter engine uses maintained ad/tracker lists and will not block every ad, cosmetic element, or tracking technique; when list downloads fail, it falls back to a smaller domain list. Site permissions are denied by default; this can break websites that rely on camera, microphone, notifications, or geolocation.
 
 Before using this as your primary browser for sensitive accounts, it needs automated integration tests, an explicit threat model, a mature and regularly updated ad-filter engine, secure auto-updates, signed releases, dependency auditing, and independent security review. Do not disable certificate validation or grant remote pages privileged application APIs.
 
