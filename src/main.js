@@ -32,7 +32,11 @@ async function initialiseBlocking(webSession) {
   installFallbackBlocking(webSession);
   try {
     // Load maintained, prebuilt advertising and tracking filter lists.
-    const blocker = await ElectronBlocker.fromPrebuiltAdsAndTracking(fetch, {\n      path: path.join(app.getPath('userData'), 'adblock-engine.bin'),\n      read: fs.readFile,\n      write: fs.writeFile\n    });
+    const blocker = await ElectronBlocker.fromPrebuiltAdsAndTracking(fetch, {
+      path: path.join(app.getPath('userData'), 'adblock-engine.bin'),
+      read: fs.readFile,
+      write: fs.writeFile
+    });
     webSession.webRequest.onBeforeRequest(null);
     if (blockingEnabled) blocker.enableBlockingInSession(webSession);
     adblocker = blocker;
