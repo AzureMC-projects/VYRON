@@ -1,6 +1,9 @@
-const { contextBridge } = require('electron');
+const { contextBridge, ipcRenderer } = require('electron');
 
-// Intentionally expose no Node APIs or privileged IPC to page content.
+// Narrow, explicit bridge only. Remote websites never receive this API.
 contextBridge.exposeInMainWorld('vyron', Object.freeze({
-  version: '0.1.0'
+  version: () => ipcRenderer.invoke('vyron:app:version'),
+  getBlocking: () => ipcRenderer.invoke('vyron:blocking:get'),
+  setBlocking: enabled => ipcRenderer.invoke('vyron:blocking:set', Boolean(enabled)),
+  clearBrowsingData: () => ipcRenderer.invoke('vyron:data:clear')
 }));
