@@ -23,6 +23,7 @@
       <input id="address" aria-label="Search or enter address" autocomplete="off" spellcheck="false" placeholder="Search or enter a URL">
       <button type="submit" class="go-button">Go</button>
     </form>
+    <button class="icon-button" id="historyButton" title="Browsing history" aria-label="Browsing history">◷</button>
     <button class="icon-button" id="bookmarkButton" title="Bookmark this page (Ctrl+D)" aria-label="Bookmark this page">☆</button>
     <button class="icon-button" id="blockerToggle" title="Toggle tracker blocking" aria-label="Toggle tracker blocking">◉</button>
   </section>
@@ -64,6 +65,12 @@
       <button id="clearData" class="secondary-button">Clear cookies, site data and cache</button>
       <button id="resetSettings" class="secondary-button">Reset appearance</button>
       <p id="privacyFeedback" class="disclaimer" role="status"></p>
+    </aside>
+    <aside id="historyPanel" class="settings-panel history-panel" hidden>
+      <div class="panel-heading"><div><p class="eyebrow">YOUR ACTIVITY</p><h2>Recent history</h2></div><button id="closeHistory" class="icon-button" aria-label="Close history">×</button></div>
+      <p class="disclaimer">Your recent visits are stored locally in this browser profile.</p>
+      <div id="historyList" class="history-list"></div>
+      <button id="clearHistory" class="secondary-button">Clear browsing history</button>
     </aside>
   </main>
   <footer class="statusbar"><span><span class="status-dot"></span> VYRON</span><span id="statusText">Ready when you are</span></footer>
