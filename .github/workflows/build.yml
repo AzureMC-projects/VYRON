@@ -1,4 +1,4 @@
-name: VYRON build
+name: VYRON Windows installer
 
 on:
   push:
@@ -11,14 +11,14 @@ permissions:
   contents: read
 
 concurrency:
-  group: vyron-build-${{ github.ref }}
+  group: vyron-windows-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  verify:
-    runs-on: ubuntu-latest
+  windows-release:
+    runs-on: windows-latest
     steps:
-      - name: Check out source
+      - name: Check out VYRON
         uses: actions/checkout@v4
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -28,12 +28,20 @@ jobs:
         run: npm install --no-audit --no-fund
       - name: Check JavaScript syntax
         run: npm run check
-      - name: Build Linux packages
-        run: npm run dist:linux
-      - name: Upload Linux installers
+      - name: Build Windows installer and portable EXE
+        run: npm run dist:win
+      - name: Assemble VYRON folder
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path VYRON | Out-Null
+          Copy-Item -Path release/*.exe -Destination VYRON/
+          Compress-Archive -Path VYRON -DestinationPath VYRON-Windows.zip -Force
+      - name: Upload Windows installer, portable EXE, and VYRON folder
         uses: actions/upload-artifact@v4
         with:
-          name: vyron-linux-${{ github.sha }}
-          path: release/*
+          name: VYRON-Windows
+          path: |
+            release/*.exe
+            VYRON-Windows.zip
           if-no-files-found: error
-          retention-days: 14
+          retention-days: 30
