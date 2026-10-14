@@ -1,5 +1,7 @@
 const { app, BrowserWindow, session, shell, ipcMain, dialog } = require('electron');
 const path = require('node:path');
+const { ElectronBlocker } = require('@ghostery/adblocker-electron');
+const fetch = require('cross-fetch');
 
 const PARTITION = 'persist:vyron';
 const BLOCKED_HOSTS = new Set([
@@ -11,6 +13,8 @@ const BLOCKED_HOSTS = new Set([
   'rubiconproject.com', 'pubmatic.com', 'openx.net', 'adform.net'
 ]);
 let blockingEnabled = true;
+let adblocker = null;
+let usingFullFilterLists = false;
 const isHttp = value => { try { return ['http:', 'https:'].includes(new URL(value).protocol); } catch { return false; } };
 function isBlocked(raw) {
   try {
@@ -18,15 +22,29 @@ function isBlocked(raw) {
     return [...BLOCKED_HOSTS].some(domain => host === domain || host.endsWith('.' + domain));
   } catch { return false; }
 }
-
-app.commandLine.appendSwitch('disable-renderer-backgrounding');
-app.whenReady().then(() => {
-  const webSession = session.fromPartition(PARTITION);
-  webSession.setPermissionRequestHandler((_wc, _permission, callback) => callback(false));
-  webSession.setPermissionCheckHandler(() => false);
+function installFallbackBlocking(webSession) {
   webSession.webRequest.onBeforeRequest({ urls: ['http://*/*', 'https://*/*'] }, (details, callback) => {
     callback({ cancel: blockingEnabled && isBlocked(details.url) });
   });
+}
+async function initialiseBlocking(webSession) {
+  installFallbackBlocking(webSession);
+  try {
+    // Load maintained, prebuilt advertising and tracking filter lists.
+    const blocker = await ElectronBlocker.fromPrebuiltAdsAndTracking(fetch);
+    webSession.webRequest.onBeforeRequest(null);
+    blocker.enableBlockingInSession(webSession);
+    adblocker = blocker;
+    usingFullFilterLists = true;
+  } catch (error) {
+    // Offline startup remains functional with the bundled emergency domain list.
+    console.warn('VYRON filter lists unavailable; using built-in domain list.', error?.message || error);
+  }
+}
+app.whenReady().then(async () => {
+  const webSession = session.fromPartition(PARTITION);
+  webSession.setPermissionRequestHandler((_wc, _permission, callback) => callback(false));
+  webSession.setPermissionCheckHandler(() => false);
   webSession.on('will-download', (_event, item) => {
     const win = BrowserWindow.getAllWindows()[0];
     const filename = item.getFilename();
@@ -36,6 +54,7 @@ app.whenReady().then(() => {
     }).catch(() => item.cancel());
   });
   createWindow();
+  initialiseBlocking(webSession).catch(error => console.error('Blocking setup failed:', error));
   app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) createWindow(); });
 });
 function createWindow() {
@@ -67,10 +86,15 @@ function createWindow() {
     if (!isHttp(params.src || 'https://example.com')) event.preventDefault();
   });
 }
-ipcMain.handle('vyron:blocking:get', () => blockingEnabled);
+ipcMain.handle('vyron:blocking:get', () => ({ enabled: blockingEnabled, fullFilterLists: usingFullFilterLists }));
 ipcMain.handle('vyron:blocking:set', (_event, value) => {
   blockingEnabled = Boolean(value);
-  return blockingEnabled;
+  const webSession = session.fromPartition(PARTITION);
+  if (adblocker) {
+    if (blockingEnabled) adblocker.enableBlockingInSession(webSession);
+    else adblocker.disableBlockingInSession(webSession);
+  }
+  return { enabled: blockingEnabled, fullFilterLists: usingFullFilterLists };
 });
 ipcMain.handle('vyron:data:clear', async () => {
   const ses = session.fromPartition(PARTITION);
