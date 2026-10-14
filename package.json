@@ -9,10 +9,10 @@
   "scripts": {
     "start": "electron .",
     "check": "node --check src/main.js && node --check src/preload.js && node --check src/renderer.js",
-    "dist": "npm run check && electron-builder",
-    "dist:win": "npm run check && electron-builder --win",
-    "dist:mac": "npm run check && electron-builder --mac",
-    "dist:linux": "npm run check && electron-builder --linux"
+    "dist": "npm run check && electron-builder --publish never",
+    "dist:win": "npm run check && electron-builder --win --publish never",
+    "dist:mac": "npm run check && electron-builder --mac --publish never",
+    "dist:linux": "npm run check && electron-builder --linux --publish never"
   },
   "engines": {
     "node": ">=22.12.0"
