@@ -14,7 +14,6 @@
     <button class="icon-button" id="newTab" title="New tab" aria-label="New tab">+</button>
     <button class="icon-button" id="settingsButton" title="Customise VYRON" aria-label="Customise VYRON">⚙</button>
   </header>
-
   <section class="toolbar" aria-label="Navigation">
     <button class="icon-button" id="back" title="Back" aria-label="Back">←</button>
     <button class="icon-button" id="forward" title="Forward" aria-label="Forward">→</button>
@@ -24,16 +23,16 @@
       <input id="address" aria-label="Search or enter address" autocomplete="off" spellcheck="false" placeholder="Search or enter a URL">
       <button type="submit" class="go-button">Go</button>
     </form>
-    <button class="icon-button" id="blockerToggle" title="Toggle basic tracker blocking" aria-label="Toggle basic tracker blocking">◉</button>
+    <button class="icon-button" id="bookmarkButton" title="Bookmark this page (Ctrl+D)" aria-label="Bookmark this page">☆</button>
+    <button class="icon-button" id="blockerToggle" title="Toggle tracker blocking" aria-label="Toggle tracker blocking">◉</button>
   </section>
-
   <main id="viewport" class="viewport">
     <section id="startPage" class="start-page">
       <div class="hero">
         <div class="hero-mark">V</div>
         <p class="eyebrow">YOUR WEB. YOUR RULES.</p>
         <h1>Make the web <span>yours.</span></h1>
-        <p class="subhead">A faster-feeling, more personal space to explore.</p>
+        <p class="subhead">Your space to explore, with your settings saved locally.</p>
         <form id="startSearch" class="start-search">
           <span>⌕</span>
           <input id="startAddress" aria-label="Search the web" placeholder="Search anything or enter a URL" autocomplete="off">
@@ -44,8 +43,12 @@
           <button data-url="https://wikipedia.org">Wikipedia</button>
           <button data-url="https://github.com">GitHub</button>
         </div>
+        <section class="saved-section">
+          <div class="saved-heading"><span class="eyebrow">YOUR BOOKMARKS</span><button id="clearBookmarks" class="text-button">Clear all</button></div>
+          <div id="bookmarkList" class="bookmark-list"><span class="muted">Pages you save will appear here.</span></div>
+        </section>
       </div>
-      <p class="local-note"><span class="status-dot"></span> Customise your browser from the settings panel.</p>
+      <p class="local-note"><span class="status-dot"></span> Personal settings are stored on this device.</p>
     </section>
     <aside id="settingsPanel" class="settings-panel" hidden>
       <div class="panel-heading"><div><p class="eyebrow">PERSONALISE</p><h2>Your VYRON</h2></div><button id="closeSettings" class="icon-button" aria-label="Close settings">×</button></div>
@@ -54,13 +57,15 @@
       <label class="setting-row"><span><strong>Interface density</strong><small>Space or compactness</small></span><select id="densitySelect"><option value="comfortable">Comfortable</option><option value="compact">Compact</option></select></label>
       <label class="setting-row"><span><strong>Reduce motion</strong><small>Keep transitions subtle</small></span><input type="checkbox" id="motionToggle"></label>
       <div class="settings-divider"></div>
-      <p class="eyebrow">PRIVACY</p>
-      <div class="setting-row"><span><strong>Tracker blocklist</strong><small id="blockerStatus">Prototype protection is limited</small></span><span class="pill" id="blockerPill">BETA</span></div>
-      <p class="disclaimer">This is an early prototype. Blocking is currently a small built-in domain list, not a full ad-blocking engine. Site permissions are denied by default in this build.</p>
+      <p class="eyebrow">PRIVACY & SECURITY</p>
+      <label class="setting-row"><span><strong>Tracker blocking</strong><small id="blockerStatus">Loading protection status…</small></span><input type="checkbox" id="blockerSetting" checked></label>
+      <p class="disclaimer">VYRON blocks requests to a built-in list of known advertising and tracking domains. This is not yet equivalent to EasyList/uBlock Origin, and some ads will remain. Site camera, microphone, and other permission requests are denied by default.</p>
+      <button id="clearData" class="secondary-button">Clear cookies, site data and cache</button>
       <button id="resetSettings" class="secondary-button">Reset appearance</button>
+      <p id="privacyFeedback" class="disclaimer" role="status"></p>
     </aside>
   </main>
-  <footer class="statusbar"><span><span class="status-dot"></span> VYRON prototype</span><span id="statusText">Ready when you are</span></footer>
+  <footer class="statusbar"><span><span class="status-dot"></span> VYRON</span><span id="statusText">Ready when you are</span></footer>
   <script src="renderer.js"></script>
 </body>
 </html>
