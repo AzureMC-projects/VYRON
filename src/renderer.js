@@ -222,18 +222,22 @@ $('motionToggle').addEventListener('change', e => { prefs.reduceMotion = e.targe
 if ($('searchEngine')) $('searchEngine').addEventListener('change', e => { prefs.searchEngine = e.target.value; persistPrefs(); });
 $('resetSettings').addEventListener('click', () => { prefs = { ...defaults }; persistPrefs(); applyPrefs(); });
 $('blockerToggle').addEventListener('click', async () => {
-  blockingEnabled = await window.vyron.setBlocking(!blockingEnabled);
-  syncBlockingUI();
+  const result = await window.vyron.setBlocking(!blockingEnabled);
+  blockingEnabled = result.enabled;
+  syncBlockingUI(result);
 });
 $('blockerSetting').addEventListener('change', async e => {
-  blockingEnabled = await window.vyron.setBlocking(e.target.checked);
-  syncBlockingUI();
+  const result = await window.vyron.setBlocking(e.target.checked);
+  blockingEnabled = result.enabled;
+  syncBlockingUI(result);
 });
-function syncBlockingUI() {
+function syncBlockingUI(result = { enabled: blockingEnabled, fullFilterLists: false }) {
+  blockingEnabled = result.enabled;
   $('blockerSetting').checked = blockingEnabled;
-  $('blockerStatus').textContent = blockingEnabled ? 'Blocking known ad/tracker domains' : 'Request blocking is paused';
+  $('blockerStatus').textContent = !blockingEnabled ? 'Request blocking is paused' : result.fullFilterLists ? 'Advertising and tracking filter lists active' : 'Basic domain list active (offline fallback)';
   $('blockerToggle').style.color = blockingEnabled ? 'var(--accent)' : 'var(--muted)';
-  status.textContent = blockingEnabled ? 'Tracker blocking enabled' : 'Tracker blocking paused';
+  $('blockerToggle').title = blockingEnabled ? 'Tracker blocking is on' : 'Tracker blocking is off';
+  status.textContent = blockingEnabled ? (result.fullFilterLists ? 'Ad and tracker blocking enabled' : 'Basic blocking enabled') : 'Tracker blocking paused';
 }
 $('clearData').addEventListener('click', async () => {
   const button = $('clearData');
@@ -255,5 +259,5 @@ document.addEventListener('keydown', e => {
 });
 applyPrefs();
 renderBookmarks();
-window.vyron.getBlocking().then(value => { blockingEnabled = value; syncBlockingUI(); }).catch(() => { status.textContent = 'Privacy controls unavailable'; });
+window.vyron.getBlocking().then(result => { blockingEnabled = result.enabled; syncBlockingUI(result); }).catch(() => { status.textContent = 'Privacy controls unavailable'; });
 createTab();
